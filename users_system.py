@@ -52,4 +52,20 @@ def delete_user(login:str):
             users.remove(user)
             return "видалено"
     raise HTTPException(status_code=404, detail="не знайдено")
-    
+
+@app.get("/user/get-all",response_class=HTMLResponse)
+def get_all():
+    if not users:
+        return HTMLResponse("<h2>Список порожній</h2>")
+    html= "<h2>Список користувачів</h2><ol>"
+    for user in users:
+        html+=f"<li>{user['login']},{user["name"]},{user["surname"]},{user["age"]}</li>"
+    html+="</ol>"
+    return HTMLResponse(content=html)
+
+@app.get("/user/{login}")
+def get_user(login:str):
+    for user in users:
+        if user["login"]==login:
+            return user
+    raise HTTPException(status_code=404, detail="Users не знайдено")
